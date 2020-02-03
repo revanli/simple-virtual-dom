@@ -1,0 +1,27 @@
+{
+  "name": "simple-virtual-dom",
+  "version": "1.0.0",
+  "description": "Simple virtual-dom algorithm.",
+  "main": "simple-virtual-dom.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify simple-virtual-dom.js -o dist/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revanli/simple-virtual-dom.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/revanli/simple-virtual-dom/issues"
+  },
+  "homepage": "https://github.com/revanli/simple-virtual-dom#readme",
+  "devDependencies": {
+    "browserify": "^16.5.0"
+  }
+}
