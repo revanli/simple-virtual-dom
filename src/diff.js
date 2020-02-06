@@ -1,6 +1,7 @@
 var _ = require('./utils')
 
 var patch = require('./patch')
+var listDiff = require('./list-diff').listDiff
 
 // 对比两棵树
 function diff(oldTree, newTree) {
@@ -22,7 +23,7 @@ function dfsWalk(oldNode, newNode, index, patches) {
   } else if (_.isString(oldNode) && _.isString(newNode)) {
     // TextNode content replacing
     if (newNode !== oldNode) {
-      currentPatch.push({ type: pathch.TEXT })
+      currentPatch.push({ type: patch.TEXT, content: newNode })
     }
   } else if (
     // Nodes are the same, diff old node's props and children
@@ -35,8 +36,14 @@ function dfsWalk(oldNode, newNode, index, patches) {
       currentPatch.push({ type: patch.PROPS, props: propsPatches })
     }
 
-    // diff children
-    diffChildren(oldNode.children, newNode.children, index, patches, currentPatch)
+    diffChildren(
+      oldNode.children || [],
+      newNode.children || [],
+      index,
+      patches,
+      currentPatch
+    )
+  // Nodes are not the same, replace the old node with new node
   } else {
     // Nodes are not same, replace the old with new node
     currentPatch.push({ type: patch.REPLACE, node: newNode })
@@ -47,13 +54,68 @@ function dfsWalk(oldNode, newNode, index, patches) {
   }
 }
 
-function diffProps(oldNode, newNode) {
-  
+// 遍历子节点
+function diffChildren(oldChildren, newChildren, index, patches, currentPatch) {
+  var diffs = listDiff(oldChildren, newChildren, 'key')
+  // console.log('diffs>>>', diffs)
+  newChildren = diffs.children
+
+  if (diffs.moves.length) {
+    var reorderPatch = { type: patch.REORDER, moves: diffs.moves }
+    currentPatch.push(reorderPatch)
+  }
+
+  var leftNode = null
+  var currentNodeIndex = index
+  oldChildren.forEach((child, i) => {
+    var newChild = newChildren[i]
+    currentNodeIndex = (leftNode && leftNode.count)
+      ? currentNodeIndex + leftNode.count + 1
+      : currentNodeIndex + 1
+    dfsWalk(child, newChild, currentNodeIndex, patches)
+    leftNode = child
+  })
 }
 
-// 遍历子节点
-function diffChildren(oldChildren, newChildren, index, patches) {
-  
+/**
+ * compare newProps between oldProps, 
+ * find out diffeernt properties and new properties
+ *
+ * @param   {Object}  oldNode  el(tagName, props, children)
+ * @param   {Object}  newNode  el(tagName, props, children)
+ */
+function diffProps(oldNode, newNode) {
+  var count = 0
+  var oldProps = oldNode.props
+  var newProps = newNode.props
+
+  var key, value
+  var propsPatches = {}
+
+  // Find out different properties
+  for (key in oldProps) {
+    value = oldProps[key]
+    if (newProps[key] !== value) {
+      count++
+      propsPatches[key] = newProps[key]
+    }
+  }
+
+  // Find out new property
+  for (key in newProps) {
+    value = newProps[key]
+    if (!oldProps.hasOwnProperty(key)) {
+      count++
+      propsPatches[key] = newProps[key]
+    }
+  }
+
+  // if props not change or don't have new property
+  if (count === 0) {
+    return null
+  }
+
+  return propsPatches
 }
 
 module.exports = diff

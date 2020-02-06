@@ -5,7 +5,7 @@ _.type = function(obj) {
 }
 
 _.isArray = function(list) {
-  return type(list) === 'Array'
+  return _.type(list) === 'Array'
 }
 
 _.slice = function(arrayLike, index) {
@@ -13,13 +13,7 @@ _.slice = function(arrayLike, index) {
 }
 
 _.isString = function(strLike) {
-  return type(strLike) === 'string'
-}
-
-_.each = function(array, fn) {
-  for (var i = 0, len = array.length; i < len; i++) {
-    fn(array[i], i)
-  }
+  return _.type(strLike) === 'string'
 }
 
 _.toArray = function(listLike) {

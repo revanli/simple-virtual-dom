@@ -11,16 +11,27 @@
   <script src="../dist/bundle.js"></script>
   <script>
     var el = svd.el
+    var diff = svd.diff
+    var patch = svd.patch
 
-    var ul = el('ul', { id: 'List' }, [
-      el('li', { class: 'item' }, ['Item 1']),
-      el('li', { class: 'item' }, ['Item 2']),
-      el('li', { class: 'item' }, ['Item 3']),
-    ]);
+    var tree = el('div', {'id': 'container'}, [
+      el('h1', {style: 'color: blue'}, ['simple virtal dom']),
+      el('p', ['Hello, virtual-dom']),
+      el('ul', [el('li')])
+    ])
 
-    var ulRoot = ul.render();
-    console.log('ul>>>', ul);
-    document.body.appendChild(ulRoot);
+    var root = tree.render();
+    document.body.appendChild(root);
+
+    var newTree = el('div', {'id': 'container'}, [
+      el('h1', {style: 'color: red'}, ['simple virtual dom']),
+      el('p', ['Hello111, virtual-dom']),
+      el('ul', [el('li'), el('li')])
+    ])
+
+    var patches = diff(tree, newTree);
+
+    console.log('patches>>>', patches)
 
   </script>
 </body>

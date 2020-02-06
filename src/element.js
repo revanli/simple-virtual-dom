@@ -11,12 +11,35 @@ var _ = require('./utils')
  */
 function Element(tagName, props, children) {
   if (!(this instanceof Element)) {
+    // console.log('children before>>>', arguments)
+    if (!_.isArray(children) && children != null) {
+      children = _.slice(arguments, 2).filter(value => !!value)
+    }
     return new Element(tagName, props, children)
   }
+
+  if (_.isArray(props)) {
+    children = props
+    props = {}
+  }
+  
   this.tagName = tagName
   this.props = props || {}
   this.children = children || []
-  this.key = props.key
+  this.key = props ? props.key : 0
+
+  var count = 0
+
+  this.children.forEach((child, i) => {
+    if (child instanceof Element) {
+      count += child.count
+    } else {
+      children[i] = '' + child
+    }
+    count++
+  })
+
+  this.count = count
 }
 
 /**
