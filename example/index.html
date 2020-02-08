@@ -26,12 +26,13 @@
     var newTree = el('div', {'id': 'container'}, [
       el('h1', {style: 'color: red'}, ['simple virtual dom']),
       el('p', ['Hello111, virtual-dom']),
-      el('ul', [el('li'), el('li')])
+      el('ul', [el('li', ['test2']), el('li', ['test'])])
     ])
 
-    var patches = diff(tree, newTree);
-
+    var patches = diff(tree, newTree)
     console.log('patches>>>', patches)
+
+    patch(root, patches);
 
   </script>
 </body>

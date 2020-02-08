@@ -13,7 +13,7 @@ _.slice = function(arrayLike, index) {
 }
 
 _.isString = function(strLike) {
-  return _.type(strLike) === 'string'
+  return _.type(strLike) === 'String'
 }
 
 _.toArray = function(listLike) {

@@ -4,14 +4,16 @@ var _ = require('./utils')
  * Virtual-dom Element
  *
  * @param   {String}  tagName
- * @param   {Object}  props  - Element properties
- *                           - use Object to store key-value pair
+ * @param   {Object|undefined}  props  - Element properties
+ *                                     - use Object to store key-value pair
  * @param   {Array<Element|String>}  children  - children elements
- *                                   - Element instance or plain text
+ *                                             - Element instance or plain text
+ * example: ('h1', {style: 'color: blue'}, ['simple virtal dom']),
+ * ('p', ['Hello, virtual-dom'])
+ * 
  */
 function Element(tagName, props, children) {
   if (!(this instanceof Element)) {
-    // console.log('children before>>>', arguments)
     if (!_.isArray(children) && children != null) {
       children = _.slice(arguments, 2).filter(value => !!value)
     }
@@ -26,7 +28,7 @@ function Element(tagName, props, children) {
   this.tagName = tagName
   this.props = props || {}
   this.children = children || []
-  this.key = props ? props.key : 0
+  this.key = props ? props.key : void 666
 
   var count = 0
 

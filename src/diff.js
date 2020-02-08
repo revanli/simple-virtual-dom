@@ -16,6 +16,7 @@ function diff(oldTree, newTree) {
 // 先序深度优先遍历两棵树，对比oldNode和newNode
 function dfsWalk(oldNode, newNode, index, patches) {
   var currentPatch = []
+  console.log('dfsWalk>>>', oldNode, newNode)
 
   // Node is removed
   if (newNode === null) {
@@ -23,6 +24,7 @@ function dfsWalk(oldNode, newNode, index, patches) {
   } else if (_.isString(oldNode) && _.isString(newNode)) {
     // TextNode content replacing
     if (newNode !== oldNode) {
+      console.log('newNode>>>', newNode)
       currentPatch.push({ type: patch.TEXT, content: newNode })
     }
   } else if (
@@ -56,8 +58,8 @@ function dfsWalk(oldNode, newNode, index, patches) {
 
 // 遍历子节点
 function diffChildren(oldChildren, newChildren, index, patches, currentPatch) {
+  // TODO: list diff detail
   var diffs = listDiff(oldChildren, newChildren, 'key')
-  // console.log('diffs>>>', diffs)
   newChildren = diffs.children
 
   if (diffs.moves.length) {
@@ -68,6 +70,7 @@ function diffChildren(oldChildren, newChildren, index, patches, currentPatch) {
   var leftNode = null
   var currentNodeIndex = index
   oldChildren.forEach((child, i) => {
+    console.log('child>>>', child)
     var newChild = newChildren[i]
     currentNodeIndex = (leftNode && leftNode.count)
       ? currentNodeIndex + leftNode.count + 1
